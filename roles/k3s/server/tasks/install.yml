@@ -58,21 +58,21 @@
 
 - name: Wait for node-token
   ansible.builtin.wait_for:
-    path: /var/lib/rancher/k3s/server/node-token
+    path: "{{ k3s_server_location }}/server/node-token"
 
 - name: Register node-token file access mode
   ansible.builtin.stat:
-    path: /var/lib/rancher/k3s/server
+    path: "{{ k3s_server_location }}/server"
   register: p
 
 - name: Change file access node-token
   ansible.builtin.file:
-    path: /var/lib/rancher/k3s/server
+    path: "{{ k3s_server_location }}/server"
     mode: "g+rx,o+rx"
 
 - name: Read node-token from server
   ansible.builtin.slurp:
-    src: /var/lib/rancher/k3s/server/node-token
+    src: "{{ k3s_server_location }}/server/node-token"
   register: node_token
 
 - name: Store server node-token
@@ -81,7 +81,7 @@
 
 - name: Restore node-token file access
   ansible.builtin.file:
-    path: /var/lib/rancher/k3s/server
+    path: "{{ k3s_server_location }}/server"
     mode: "{{ p.stat.mode }}"
 
 - name: Create directory .kube

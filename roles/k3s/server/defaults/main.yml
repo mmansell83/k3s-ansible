@@ -1,5 +1,5 @@
 ---
-
+k3s_server_location: /var/lib/rancher/k3s
 keepalived_enabled: false
 
 ansible_user: root
