@@ -10,6 +10,10 @@ enrich==1.2.6
 Jinja2==3.0.1
 MarkupSafe==2.0.1
 packaging==20.9
+<<<<<<< HEAD
+=======
+pathspec==0.8.1
+>>>>>>> d3109b89fc34b5da23a452cc5aa58fd6ea66e376
 pycparser==2.20
 Pygments==2.9.0
 pyparsing==2.4.7
@@ -21,3 +25,7 @@ ruamel.yaml.clib==0.2.2
 six==1.16.0
 tenacity==7.0.0
 wcmatch==8.2
+<<<<<<< HEAD
+=======
+yamllint==1.26.1
+>>>>>>> d3109b89fc34b5da23a452cc5aa58fd6ea66e376
