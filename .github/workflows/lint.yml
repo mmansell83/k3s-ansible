@@ -5,6 +5,7 @@ name: Lint
   push:
     branches:
       - master
+      - main
 
 jobs:
 
