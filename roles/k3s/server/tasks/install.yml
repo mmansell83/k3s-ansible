@@ -35,7 +35,7 @@
       changed_when: false
   always:
     - name: Kill the temporary service used for initialization
-      systemd:
+      ansible.builtin.systemd:
         name: k3s-init
         state: stopped
       failed_when: false
