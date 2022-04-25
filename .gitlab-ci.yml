@@ -7,9 +7,6 @@ ansible-lint:
   image: python:3.10.4-bullseye
   stage: test
   script:
-    - cd ansible
-    - python -m venv .venv
-    - source .venv/bin/activate
     - pip install --upgrade pip --quiet
     - pip install -r requirements.txt
     - yamllint .
