@@ -11,3 +11,4 @@ ansible-lint:
     - pip install -r requirements.txt
     - yamllint .
     - ansible-lint
+  interruptible: true
