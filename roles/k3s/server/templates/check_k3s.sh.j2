@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "`pidof 'k3s server'`" ]; then
+# if [ -z "`pidof 'k3s server'`" ]; then
+if [ -z "`kubectl get --raw='/readyz'`" ]; then
   exit 1
 fi
