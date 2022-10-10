@@ -3,20 +3,23 @@
 global_defs {
    router_id ocp_vrrp
    enable_script_security
-   script_user root
 }
 
 vrrp_script haproxy_check {
    script "/etc/keepalived/check_k3s.sh"
-   interval 2
-   weight 2
+   user {{ keepalived_script_user | default('root') }}
+   interval {{ keepalived_script_check_interval | default('2') }}
+   timeout {{ keepalived_script_timeout | default('5') }}
+   rise {{ keepalived_script_check_rise | default('3') }}
+   fall {{ keepalived_script_check_fall | default('3') }}
+   weight 10
 }
 
 vrrp_instance VI_1 {
    interface {{ vip_interface | default(ansible_default_ipv4.interface) }}
    virtual_router_id {{ keepalived_virtual_router_id | default('51') }}
-   priority  {{ vr_priority | default('100') }}  # Should be 200 for MASTER
-   advert_int 2
+   priority  {{ vr_priority | default('100') }}  # Should be 105 for MASTER
+   advert_int 1
    state {{ vr_state | default('BACKUP') }}  # 'Primary' server should get MASTER
    virtual_ipaddress {
        {{ cluster_vip | default(apiserver_endpoint)  }}/{{ cluster_vip_mask | default('24') }}
@@ -24,8 +27,8 @@ vrrp_instance VI_1 {
    track_script {
        haproxy_check
    }
-#   authentication {
-#      auth_type PASS
-#      auth_pass cde3vfr4bgt5
-#   }
+   authentication {
+      auth_type PASS
+      auth_pass {{ keepalived_auth_passwd | default('cde3vfr4bgt5') }}
+   }
 }
