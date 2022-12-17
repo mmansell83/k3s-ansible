@@ -1,6 +1,6 @@
 # Build a Kubernetes cluster using k3s via Ansible
 
-Author: <https://github.com/itwars>
+Original Author: <https://github.com/itwars>
 
 ## K3s Ansible Playbook
 
@@ -9,17 +9,17 @@ Build a Kubernetes cluster using Ansible with k3s. The goal is easily install a 
 - [X] Debian
 - [X] Ubuntu
 - [X] CentOS
+- [X] AlmaLinux
 
 on processor architecture:
 
-- [X] x64
+- [X] x86_64
 - [X] arm64
 - [X] armhf
 
 ## System requirements
 
-Deployment environment must have Ansible 2.4.0+
-Server and agent nodes must have passwordless SSH access
+Deployment environment must have Ansible 2.10.0+
 
 ## Usage
 
