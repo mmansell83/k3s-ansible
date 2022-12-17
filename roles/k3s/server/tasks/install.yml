@@ -20,6 +20,7 @@
                       --unit=k3s-init \
                       k3s server {{ server_init_args }}"
     creates: "{{ systemd_dir }}/k3s.service"
+  # Below commented out due to a module change causing this to fail
   # args:
   #   warn: false  # The ansible systemd module does not support transient units
 
@@ -99,7 +100,7 @@
     owner: "{{ ansible_user }}"
     mode: "u=rw,g=,o="
 
-- name: Configure kubectl cluster to https://{{ apiserver_endpoint }}:6443
+- name: Configure kubectl cluster to https://{{ apiserver_endpoint }}:6443  # noqa template
   ansible.builtin.command: >-
     k3s kubectl config set-cluster default
       --server=https://{{ apiserver_endpoint }}:6443
