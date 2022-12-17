@@ -1,6 +1,6 @@
 ---
 skip_list:
-- name[template]  # Allow Jinja templating inside play names
+  - name[template]  # Allow Jinja templating inside play names
 
 warn_list:  # or 'skip_list' to silence them completely
   - yaml  # Violations reported by yamllint

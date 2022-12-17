@@ -1,8 +1,39 @@
 ---
-- name: Set SELinux to disabled state
-  ansible.posix.selinux:
-    state: disabled
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+# - name: Set SELinux to disabled state
+#   ansible.posix.selinux:
+#     state: disabled
+#   when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+
+- name: Get All Services
+  ansible.builtin.service_facts:
+
+# Leave the firewall enabled but disable cloud setup
+# https://docs.k3s.io/advanced#red-hat-enterprise-linux--centos
+- name: Ensure nm-cloud-setup.service and nm-cloud-setup.timer are disabled
+  vars:
+    nm_cloud_setup_services:
+      - nm-cloud-setup.service
+      - nm-cloud-setup.timer
+  ansible.builtin.systemd:
+    name: "{ item }}"
+    state: stopped
+    enabled: false
+  # loop: "{{ nm_cloud_setup_services }}"
+  loop: "{{ services | dict2items | map(attribute='key') | intersect(nm_cloud_setup_services) }}"
+  notify:
+    - reboot
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  ansible.builtin.meta: flush_handlers
+
+# Needs at least 1.19.4+k3s1
+# https://docs.k3s.io/advanced#selinux-support
+- name: Ensure SELinux Policies are installed
+  ansible.builtin.package:
+    name:
+      - container-selinux
+      - selinux-policy-base
+  when: ansible_os_family == 'RedHat'
 
 - name: Enable IPv4 forwarding
   ansible.posix.sysctl:
@@ -24,13 +55,15 @@
     content: "br_netfilter"
     dest: /etc/modules-load.d/br_netfilter.conf
     mode: "u=rw,g=,o="
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  # when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  when: ansible_os_family == 'RedHat'
 
 - name: Load br_netfilter
   community.general.modprobe:
     name: br_netfilter
     state: present
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  # when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  when: ansible_os_family == 'RedHat'
 
 - name: Set bridge-nf-call-iptables (just to be sure)
   ansible.posix.sysctl:
@@ -38,7 +71,8 @@
     value: "1"
     state: present
     reload: yes
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  # when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  when: ansible_os_family == 'RedHat'
   loop:
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
@@ -51,4 +85,5 @@
     insertafter: EOF
     path: /etc/sudoers
     validate: 'visudo -cf %s'
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  # when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+  when: ansible_os_family == 'RedHat'
