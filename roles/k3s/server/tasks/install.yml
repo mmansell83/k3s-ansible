@@ -118,3 +118,12 @@
     src: /usr/local/bin/k3s
     dest: /usr/local/bin/crictl
     state: link
+
+# Open Firewall on Red Hat Family OSes
+- name: Allow Cluster API access
+  ansible.posix.firewalld:
+    port: 6443/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+  when: ansible_os_family == 'RedHat'
